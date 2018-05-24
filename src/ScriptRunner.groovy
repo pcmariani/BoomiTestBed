@@ -1,10 +1,8 @@
 
 class ScriptRunner {
-    private DataContext dataContext = new DataContext()
-    String run(Closure closeOver, String dataDocument){
-        dataContext.is = new FileInputStream(dataDocument)
-        dataContext.props = new Properties()
 
+    String run(Closure closeOver, String dataDocument){
+        DataContext dataContext = new DataContext(new FileInputStream(dataDocument), new Properties())
         closeOver(dataContext)
 
         "Resulting Document\n" +

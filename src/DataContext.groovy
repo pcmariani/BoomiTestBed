@@ -2,6 +2,11 @@ class DataContext {
     InputStream is
     Properties props
 
+    DataContext(InputStream inputStream, Properties properties){
+        is = inputStream
+        props = properties
+    }
+
     void storeStream(InputStream inputStream, Properties properties){
         is = inputStream
         props = properties
