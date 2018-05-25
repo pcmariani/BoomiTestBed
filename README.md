@@ -1,4 +1,4 @@
-#BoomiTestbed
+# BoomiTestbed
 
 This is a groovy script testing tool designed to use with the Dell Boomi Platform. Testing scripts in Boomi can be time consuming and frustrating. This tool is a wrapper for the dataContext object and allows you to see the resulting document and its properties easily with out having to execute a process in the Boomi Platform.
 
