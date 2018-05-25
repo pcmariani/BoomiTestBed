@@ -3,7 +3,8 @@ class GroovyTestBed {
 
         println new ScriptRunner().run(
                 args.length == 0? "./script.groovy" : args[0],
-                args.length < 2? "./DocumentData" : args[1]
+                args.length < 2? "./DocumentData" : args[1],
+                args.length < 3? null : args[2]
         )
     }
 }
