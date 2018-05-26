@@ -1,11 +1,14 @@
 class ScriptRunner {
 
     String run(String scriptName, String dataDocumentName, String propertiesFileName) {
-        FileInputStream fileInputStream
-        try {
-            fileInputStream = new FileInputStream(dataDocumentName)
-        } catch (Exception e) {
-            return "I can't find the document ${dataDocumentName}"
+        InputStream fileInputStream = new ByteArrayInputStream("Hello World".getBytes("UTF-8"))
+
+        if (dataDocumentName != null) {
+            try {
+                fileInputStream = new FileInputStream(dataDocumentName)
+            } catch (Exception e) {
+                return "I can't find the document ${dataDocumentName}"
+            }
         }
 
         String script
@@ -17,7 +20,7 @@ class ScriptRunner {
 
         Properties properties = new Properties()
 
-        if(propertiesFileName != null){
+        if (propertiesFileName != null) {
             try {
                 properties.load(new FileInputStream(propertiesFileName))
             } catch (Exception e) {
@@ -34,7 +37,7 @@ class ScriptRunner {
         }
 
         "Resulting Document:\n" +
-        "${dataContext.is.text}\n" +
-        "Resulting Props${dataContext.props}"
+                "${dataContext.is.text}\n" +
+                "Resulting Props${dataContext.props}"
     }
 }

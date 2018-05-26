@@ -1,10 +1,34 @@
 class GroovyTestBed {
     static void main(String[] args) throws Exception {
 
-        println new ScriptRunner().run(
-                args.length == 0? "./script.groovy" : args[0],
-                args.length < 2? "./DocumentData" : args[1],
-                args.length < 3? null : args[2]
-        )
+
+
+        def cli = new CliBuilder(usage: 'TestBed.groovy [-h -d document -p properties] script')
+
+        cli.with {
+            h longOpt: 'help', 'Show usage information (you are here ;)'
+            d longOpt: 'document', args: 1, argName: 'documentName', 'Sets the source for incoming document'
+            p longOpt: 'properties', args: 1, argName: 'propertiesName', 'Sets the source properties'
+        }
+
+        def options = cli.parse(args)
+
+        if(!options) {
+            println "Hey pal, maybe run that --help"
+            return
+        }
+
+        if(options.h) {
+            cli.usage()
+            return
+        }
+
+        String dataDocumentName = options.d ? options.d : null
+
+        String propertiesFileName = options.p ? options.p : null
+
+        String scriptName = options.arguments()[0]
+
+        println new ScriptRunner().run(scriptName, dataDocumentName, propertiesFileName)
     }
 }
