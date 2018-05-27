@@ -9,12 +9,12 @@ class GroovyTestBed {
         }
 
         def options = cli.parse(args)
-        if(!options) {
+        if (!options) {
             println "Hey pal, maybe run that --help"
             return
         }
 
-        if(options.h) {
+        if (options.h) {
             cli.usage()
             return
         }
@@ -23,11 +23,11 @@ class GroovyTestBed {
         String propertiesFileName = options.p ? options.p : null
         String scriptName = options.arguments()[0]
 
-        if (scriptName == null){
+        if (scriptName == null) {
             cli.usage()
             return
         }
 
-        println new ScriptRunner().run(scriptName, dataDocumentName, propertiesFileName)
+        println new ScriptRunner(new FileService(), new EvalService()).run(scriptName, dataDocumentName, propertiesFileName)
     }
 }

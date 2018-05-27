@@ -1,41 +1,52 @@
 class ScriptRunner {
+    private MockableService fileService
+    private MockableService evalService
+
+    ScriptRunner(MockableService fileService, MockableService evalService) {
+        this.fileService = fileService
+        this.evalService = evalService
+    }
 
     String run(String scriptName, String dataDocumentName, String propertiesFileName) {
-        InputStream fileInputStream = new ByteArrayInputStream("".getBytes("UTF-8"))
+
+        String script
+        try {
+            script = fileService.open(scriptName).text
+        } catch (Exception e) {
+            return "I can't find the script ${scriptName}"
+        }
+
+        InputStream documentContents = new ByteArrayInputStream("".getBytes("UTF-8"))
         if (dataDocumentName != null) {
             try {
-                fileInputStream = new FileInputStream (dataDocumentName)
+                documentContents = fileService.open(dataDocumentName)
             } catch (Exception e) {
                 return "I can't find the document ${dataDocumentName}"
             }
         }
 
-        String script
-        try {
-            script = new File(scriptName).text
-        } catch (Exception e) {
-            return "I can't find the script ${scriptName}"
-        }
-
         Properties properties = new Properties()
         if (propertiesFileName != null) {
             try {
-                properties.load(new FileInputStream(propertiesFileName))
+                properties.load(fileService.open(propertiesFileName))
             } catch (Exception e) {
-                return "I can't find the properties file ${propertiesFileName}"
+                return "I can't find the properties ${propertiesFileName}"
             }
         }
 
-        DataContext dataContext = new DataContext(fileInputStream, properties)
-
+        DataContext dataContext = new DataContext(documentContents, properties)
         try {
-            Eval.x(dataContext, "def dataContext = x; ${script} ; return dataContext")
+            evalService.eval(dataContext, script)
+
         } catch (Exception e) {
             return "That script does not make sense to me:\n ${e.message}"
         }
 
-        "Resulting Document:\n" +
-        "${dataContext.is.text}\n" +
-        "Resulting Props${dataContext.props}"
+
+        "Resulting Document\n" +
+                dataContext.is.text +
+                "\n" +
+                "Resulting Props\n" +
+                properties
     }
 }
