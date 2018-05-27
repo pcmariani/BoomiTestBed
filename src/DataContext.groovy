@@ -11,7 +11,8 @@ class DataContext {
         is = inputStream
         props = properties
     }
-    static int getDataCount(){
+
+    int getDataCount(){
         1
     }
     InputStream getStream(int index){

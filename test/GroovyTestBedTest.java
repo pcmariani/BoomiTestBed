@@ -8,12 +8,12 @@ import static org.junit.Assert.assertEquals;
 
 public class GroovyTestBedTest {
     private String[] args;
-    ByteArrayOutputStream myOut;
+    private ByteArrayOutputStream capturedOutput;
 
     @Before
     public void setUp() {
-        myOut = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(myOut));
+        capturedOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(capturedOutput));
     }
 
     @Test
@@ -26,7 +26,7 @@ public class GroovyTestBedTest {
 
         GroovyTestBed.main(args);
 
-        assertEquals(expected, myOut.toString());
+        assertEquals(expected, capturedOutput.toString());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class GroovyTestBedTest {
 
         GroovyTestBed.main(args);
 
-        assertEquals(expected, myOut.toString());
+        assertEquals(expected, capturedOutput.toString());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class GroovyTestBedTest {
 
         GroovyTestBed.main(args);
 
-        assertEquals(expected, myOut.toString());
+        assertEquals(expected, capturedOutput.toString());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class GroovyTestBedTest {
 
         GroovyTestBed.main(args);
 
-        assertEquals(expected, myOut.toString());
+        assertEquals(expected, capturedOutput.toString());
     }
 
     @Test
@@ -81,7 +81,7 @@ public class GroovyTestBedTest {
 
         GroovyTestBed.main(args);
 
-        assertEquals(expected, myOut.toString());
+        assertEquals(expected, capturedOutput.toString());
     }
 
     @Test
@@ -95,6 +95,6 @@ public class GroovyTestBedTest {
 
         GroovyTestBed.main(args);
 
-        assertEquals(expected, myOut.toString());
+        assertEquals(expected, capturedOutput.toString());
     }
 }

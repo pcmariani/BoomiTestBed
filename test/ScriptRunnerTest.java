@@ -3,7 +3,6 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 
@@ -39,7 +38,7 @@ public class ScriptRunnerTest {
 
     @Test
     public void run_shouldReturnErrorMessage_whenOpeningScriptFails() {
-        mockFileService.throwsExecption = true;
+        mockFileService.throwsException = true;
         mockFileService.failsOn = "scriptName";
         scriptRunner = scriptRunnerBuilder.fileService(mockFileService).build();
 
@@ -54,7 +53,7 @@ public class ScriptRunnerTest {
 
     @Test
     public void run_shouldReturnErrorMessage_whenOpeningDocumentFails() {
-        mockFileService.throwsExecption = true;
+        mockFileService.throwsException = true;
         mockFileService.failsOn = "documentName";
         scriptRunner = scriptRunnerBuilder.fileService(mockFileService).build();
 
@@ -69,7 +68,7 @@ public class ScriptRunnerTest {
 
     @Test
     public void run_shouldReturnErrorMessage_whenOpeningPropertyFails() {
-        mockFileService.throwsExecption = true;
+        mockFileService.throwsException = true;
         mockFileService.failsOn = "propertiesName";
         scriptRunner = scriptRunnerBuilder.fileService(mockFileService).build();
 
@@ -129,7 +128,7 @@ public class ScriptRunnerTest {
     }
 
     @Test
-    public void run_shouldReturnTransformedDoucment_whenCalledWithValidScript() {
+    public void run_shouldReturnTransformedDocument_whenCalledWithValidScript() {
         mockEvalService.expectedIsStream = "TransformedDocument";
         scriptRunner = scriptRunnerBuilder.evalService(mockEvalService).build();
 
@@ -155,7 +154,7 @@ public class ScriptRunnerTest {
         assertEquals("That script does not make sense to me:\n This is the reason.", result);
     }
 
-    public class ScriptRunnerBuilder {
+    class ScriptRunnerBuilder {
         private MockableService fileService = new MockFileService();
         private MockableService evalService = new MockEvalService();
 

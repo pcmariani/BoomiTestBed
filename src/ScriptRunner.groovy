@@ -12,7 +12,7 @@ class ScriptRunner {
         String script
         try {
             script = fileService.open(scriptName).text
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             return "I can't find the script ${scriptName}"
         }
 
@@ -20,7 +20,7 @@ class ScriptRunner {
         if (dataDocumentName != null) {
             try {
                 documentContents = fileService.open(dataDocumentName)
-            } catch (Exception e) {
+            } catch (Exception ignored) {
                 return "I can't find the document ${dataDocumentName}"
             }
         }
@@ -28,8 +28,8 @@ class ScriptRunner {
         Properties properties = new Properties()
         if (propertiesFileName != null) {
             try {
-                properties.load(fileService.open(propertiesFileName))
-            } catch (Exception e) {
+                properties.load(fileService.open(propertiesFileName) as InputStream)
+            } catch (Exception ignored) {
                 return "I can't find the properties ${propertiesFileName}"
             }
         }
@@ -43,6 +43,6 @@ class ScriptRunner {
         }
 
 
-        return "Resulting Document\n${dataContext.is.text}\nResulting Props\n${properties}"
+        return "Resulting Document\n$dataContext.is.text\nResulting Props\n$properties"
     }
 }
