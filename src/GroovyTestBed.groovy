@@ -9,10 +9,6 @@ class GroovyTestBed {
         }
 
         def options = cli.parse(args)
-        if (!options) {
-            println "Hey pal, maybe run that --help"
-            return
-        }
 
         if (options.h) {
             cli.usage()
