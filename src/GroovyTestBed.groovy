@@ -1,6 +1,6 @@
 class GroovyTestBed {
     static void main(String[] args) throws Exception {
-        def cli = new CliBuilder(usage: 'GroovyGroovyTestBed.groovy [-h] [-d document] [-p properties] script')
+        def cli = new CliBuilder(usage: 'GroovyTestBed.groovy [-h] [-d document] [-p properties] script')
 
         cli.with {
             h longOpt: 'help', 'Show usage information (you\'re here ;)'
