@@ -43,10 +43,6 @@ class ScriptRunner {
         }
 
 
-        "Resulting Document\n" +
-                dataContext.is.text +
-                "\n" +
-                "Resulting Props\n" +
-                properties
+        return "Resulting Document\n${dataContext.is.text}\nResulting Props\n${properties}"
     }
 }

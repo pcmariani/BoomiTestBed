@@ -11,6 +11,7 @@ public class ScriptRunnerTest {
 
     private MockFileService mockFileService;
     private MockEvalService mockEvalService;
+    private ScriptRunnerBuilder scriptRunnerBuilder;
     private ScriptRunner scriptRunner;
 
     @Before
@@ -21,7 +22,7 @@ public class ScriptRunnerTest {
 
         mockFileService = new MockFileService();
         mockEvalService = new MockEvalService();
-        scriptRunner = new ScriptRunner(mockFileService, mockEvalService);
+        scriptRunnerBuilder = new ScriptRunnerBuilder();
 
         InputStream documentStream = new ByteArrayInputStream(documentContent.getBytes());
         InputStream propertiesStream = new ByteArrayInputStream(propertiesContent.getBytes());
@@ -30,13 +31,17 @@ public class ScriptRunnerTest {
         mockFileService.inputStream.put("documentName", documentStream);
         mockFileService.inputStream.put("scriptName", scriptStream);
         mockFileService.inputStream.put("propertiesName", propertiesStream);
+
+        scriptRunnerBuilder.evalService(mockEvalService);
+        scriptRunnerBuilder.fileService(mockFileService);
+        scriptRunner = scriptRunnerBuilder.build();
     }
 
     @Test
     public void run_shouldReturnErrorMessage_whenOpeningScriptFails() {
         mockFileService.throwsExecption = true;
         mockFileService.failsOn = "scriptName";
-        scriptRunner = new ScriptRunner(mockFileService, mockEvalService);
+        scriptRunner = scriptRunnerBuilder.fileService(mockFileService).build();
 
         String result = scriptRunner.run(
                 "scriptName",
@@ -51,7 +56,7 @@ public class ScriptRunnerTest {
     public void run_shouldReturnErrorMessage_whenOpeningDocumentFails() {
         mockFileService.throwsExecption = true;
         mockFileService.failsOn = "documentName";
-        scriptRunner = new ScriptRunner(mockFileService, mockEvalService);
+        scriptRunner = scriptRunnerBuilder.fileService(mockFileService).build();
 
         String result = scriptRunner.run(
                 "scriptName",
@@ -66,7 +71,7 @@ public class ScriptRunnerTest {
     public void run_shouldReturnErrorMessage_whenOpeningPropertyFails() {
         mockFileService.throwsExecption = true;
         mockFileService.failsOn = "propertiesName";
-        scriptRunner = new ScriptRunner(mockFileService, mockEvalService);
+        scriptRunner = scriptRunnerBuilder.fileService(mockFileService).build();
 
         String result = scriptRunner.run(
                 "scriptName",
@@ -80,7 +85,7 @@ public class ScriptRunnerTest {
     @Test
     public void run_shouldReturnOriginalDocument_whenScriptDoesNotChangeIt() {
         mockEvalService.expectedIsStream = "Content";
-        scriptRunner = new ScriptRunner(mockFileService, mockEvalService);
+        scriptRunner = scriptRunnerBuilder.evalService(mockEvalService).build();
         String result = scriptRunner.run(
                 "scriptName",
                 "documentName",
@@ -93,7 +98,7 @@ public class ScriptRunnerTest {
     @Test
     public void run_shouldReturnOriginalProperties_whenScriptDoesNotChangeIt() {
         mockEvalService.expectedIsStream = "Content";
-        scriptRunner = new ScriptRunner(mockFileService, mockEvalService);
+        scriptRunner = scriptRunnerBuilder.evalService(mockEvalService).build();
         String result = scriptRunner.run(
                 "scriptName",
                 "documentName",
@@ -113,7 +118,7 @@ public class ScriptRunnerTest {
     @Test
     public void run_shouldCreateBlankProperties_whenPropertiesNameNull() {
         mockEvalService.expectedIsStream = "Content";
-        scriptRunner = new ScriptRunner(mockFileService, mockEvalService);
+        scriptRunner = scriptRunnerBuilder.evalService(mockEvalService).build();
         String result = scriptRunner.run(
                 "scriptName",
                 "documentName",
@@ -126,7 +131,7 @@ public class ScriptRunnerTest {
     @Test
     public void run_shouldReturnTransformedDoucment_whenCalledWithValidScript() {
         mockEvalService.expectedIsStream = "TransformedDocument";
-        scriptRunner = new ScriptRunner(mockFileService, mockEvalService);
+        scriptRunner = scriptRunnerBuilder.evalService(mockEvalService).build();
 
         String result = scriptRunner.run(
                 "scriptName",
@@ -140,7 +145,7 @@ public class ScriptRunnerTest {
     @Test
     public void run_shouldReturnErrorMessage_whenScriptDoesNotEvaluate() {
         mockEvalService.throwException = true;
-        scriptRunner = new ScriptRunner(mockFileService, mockEvalService);
+        scriptRunner = scriptRunnerBuilder.evalService(mockEvalService).build();
         String result = scriptRunner.run(
                 "scriptName",
                 null,
@@ -150,29 +155,22 @@ public class ScriptRunnerTest {
         assertEquals("That script does not make sense to me:\n This is the reason.", result);
     }
 
-    public class MockEvalService implements MockableService {
-        boolean throwException = false;
-        String expectedIsStream = "";
+    public class ScriptRunnerBuilder {
+        private MockableService fileService = new MockFileService();
+        private MockableService evalService = new MockEvalService();
 
-        public void eval(DataContext dataContext, String script) throws Exception {
-            if (throwException) {
-                throw new Exception("This is the reason.");
-            }
-            dataContext.setIs(new ByteArrayInputStream(expectedIsStream.getBytes()));
-        }
-    }
-
-    public class MockFileService implements MockableService {
-        HashMap<String, InputStream> inputStream = new HashMap<>();
-        Boolean throwsExecption = false;
-        String failsOn;
-
-        public InputStream open(String fileName) throws Exception {
-            if (throwsExecption && fileName == failsOn) {
-                throw new Exception();
-            }
-            return inputStream.get(fileName);
+        ScriptRunnerBuilder fileService(MockableService fileService){
+            this.fileService = fileService;
+            return this;
         }
 
+        ScriptRunnerBuilder evalService(MockableService evalService){
+            this.evalService = evalService;
+            return this;
+        }
+
+        ScriptRunner build(){
+            return new ScriptRunner(fileService, evalService);
+        }
     }
 }
