@@ -39,10 +39,11 @@ class ScriptRunner {
             evalService.eval(dataContext, script)
 
         } catch (Exception e) {
-            return "That script does not make sense to me:\n ${e.message}"
+            return "Exception thrown in script:\n ${e.message}"
         }
 
 
-        return "Resulting Document\n$dataContext.is.text\nResulting Props\n$properties"
+//        return "Resulting Document\n$dataContext.is.text\nResulting Props\n$properties"
+        return "\n\nThe end!\n\n"
     }
 }
