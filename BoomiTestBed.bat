@@ -2,8 +2,8 @@
 
 @rem *** SET THIS PATH ***
 @rem *** example:
-@rem           "%UserProfile%\BoomiTestBed"
-@rem        or "C:\Users\myusername\Documents\BoomiTestBed"
+@rem              "%UserProfile%\BoomiTestBed"
+@rem           or "C:\Users\myusername\Documents\BoomiTestBed"
 set PATH_TO_BOOMITESTBED="%UserProfile%\Documents\scripts_boomi\BoomiTestBed"
 
 
