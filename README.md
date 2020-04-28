@@ -21,8 +21,8 @@ You can put it anywhere on your hard drive
 #### Put the BoomiTestBed folder in your path
 
 1. System Properties > Advanced > Environment Variables
-2. Click Variable called Path; click Edit
-3. Add BoomiTestBed directory as a line
+2. Click the variable called Path; click Edit
+3. Add a new line for the BoomiTestBed folder
 
 #### Configure BoomiTestBed.bat
 
