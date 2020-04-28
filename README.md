@@ -33,14 +33,17 @@ If you put the BoomiTestBed folder in your home directory, it should work withou
 
 * **Blake Rhodes** - *Initial work* - [BlakeRhodes](https://github.com/BlakeRhodes)
 * **Pete Mariani** - *Some Extensions:* - [PeteMariani](https://github.com/pcmariani)
-    * can now include
+    * Can now include
         * `import com.boomi.execution.ExecutionManager`
         * `logger = ExecutionManager.getCurrent().getBaseLogger()`
-    * get and set Dynamic Process Properties
-    * use `logger.info`/warning/error
-    * include properties in a comment block starting with `/* @props`
-    * include data in a comment block starting with `/* @data`
-    * pretty print xml, json, flatfile output
+    * Get and set
+        * Dynamic Process Properties
+        * Dynamic Document Properites (start with `document.dynamic.userdefined`)
+    * Use `logger.info`/warning/error
+    * Include data and/or properties as "front-matter" in your script
+        * Data in a comment block starting with `/* @data`
+        * Properties in a comment block starting with `/* @props`
+    * Pretty print xml, json, flatfile output
 
     See also the list of [contributors](https://github.com/BlakeRhodes/BoomiTestBed\contributors) who participated in this project.
 
