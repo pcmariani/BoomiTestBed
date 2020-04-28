@@ -32,6 +32,15 @@ If you put the BoomiTestBed folder in your home directory, it should work withou
 ## Authors
 
 * **Blake Rhodes** - *Initial work* - [BlakeRhodes](https://github.com/BlakeRhodes)
+* **Pete Mariani** - *Some Extensions: 
+    * can now include
+        * `import com.boomi.execution.ExecutionManager;`
+        * `logger = ExecutionManager.getCurrent().getBaseLogger();`
+    * get and set Dynamic Process Properties
+    * use logger.info/warning/error
+    * include properties in a comment block starting with `/* @props`
+    * include data in a comment block starting with `/* @data`
+    * pretty print xml, json, flatfile output
 
     See also the list of [contributors](https://github.com/BlakeRhodes/BoomiTestBed\contributors) who participated in this project.
 
