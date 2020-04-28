@@ -1,8 +1,10 @@
 @echo off
 
 @rem *** SET THIS PATH ***
-@rem *** example: "C:\Users\myusername\BoomiTestBed"
-set PATH_TO_BOOMITESTBED="C:\Users\peter_mariani\Documents\scripts_boomi\BoomiTestBed"
+@rem *** example:
+@rem           "%UserProfile%\BoomiTestBed"
+@rem        or "C:\Users\myusername\Documents\BoomiTestBed"
+set PATH_TO_BOOMITESTBED="%UserProfile%\Documents\scripts_boomi\BoomiTestBed"
 
 
 set ARGS=
