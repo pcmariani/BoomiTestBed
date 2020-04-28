@@ -1,8 +1,11 @@
 @echo off
 
-set DIR_OF_THIS_BATCH_FILE="%~dp0"
-set ARGS=
+@rem *** SET THIS PATH ***
+@rem *** example: "C:\Users\myusername\BoomiTestBed"
+set PATH_TO_BOOMITESTBED="C:\Users\peter_mariani\Documents\scripts_boomi\BoomiTestBed"
 
+
+set ARGS=
 :LOOP
 if "%1"=="" goto ENDLOOP
     set ARG=%1
@@ -24,6 +27,6 @@ if "%1"=="" goto ENDLOOP
 echo Script running...
 echo.
 
-pushd %DIR_OF_THIS_BATCH_FILE%
+pushd %PATH_TO_BOOMITESTBED%\src\
 groovy BoomiTestBed.groovy%ARGS%
 popd
