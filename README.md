@@ -32,7 +32,7 @@ If you put the BoomiTestBed folder in your home directory, it should work withou
 ## Authors
 
 * **Blake Rhodes** - *Initial work* - [BlakeRhodes](https://github.com/BlakeRhodes)
-* **Pete Mariani** - *Some Extensions:* - [PeteMariani](https://github.com/pcmariani)
+* **Pete Mariani** - *Some Extensions* - [PeteMariani](https://github.com/pcmariani)
     * Can now include
         * `import com.boomi.execution.ExecutionManager`
         * `logger = ExecutionManager.getCurrent().getBaseLogger()`
