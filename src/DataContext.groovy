@@ -40,8 +40,9 @@ class DataContext {
         props
     }
 
+    // Would like to make this method more Groovy-y and less Java-y
     String printPretty() throws IOException, ParserConfigurationException, SAXException, TransformerConfigurationException, TransformerException {
- 
+
         String outString = this.is.text
     
         if (outString.startsWith("<")) {
