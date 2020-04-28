@@ -10,19 +10,33 @@ class ScriptRunner {
     String run(String scriptName, String dataDocumentName, String propertiesFileName) {
 
         String script
+        def commentDataGroup
+        def commentPropsGroup
         try {
             script = fileService.open(scriptName).text -~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
-            // script = fileService.open(scriptName).text
+            commentDataGroup = (script =~ /(?si)\/\*.*?@data.*?\n(.*?)\s*?[-+=*#^~]*?\*\//)
+            commentPropsGroup = (script =~ /(?si)\/\*.*?@props.*?\s(.*?)\s*?[-+=*#^~]*?\*\//)
         } catch (Exception ignored) {
             return "I can't find the script ${scriptName}"
         }
 
+        def hasData = false
         InputStream documentContents = new ByteArrayInputStream("".getBytes("UTF-8"))
         if (dataDocumentName != null) {
             try {
                 documentContents = fileService.open(dataDocumentName)
+                hasData = true
             } catch (Exception ignored) {
                 return "I can't find the document ${dataDocumentName}"
+            }
+        }
+        else if (commentDataGroup.size()) {
+            try {
+                def dataString = commentDataGroup[0][1] -~ /^.*?\r?\n/
+                documentContents = new ByteArrayInputStream(dataString.getBytes("UTF-8"))
+                hasData = true
+            } catch (Exception e) {
+                return "I can't read the data in your @data comment: ${e.message}"
             }
         }
 
@@ -32,6 +46,14 @@ class ScriptRunner {
                 properties.load(fileService.open(propertiesFileName) as InputStream)
             } catch (Exception ignored) {
                 return "I can't find the properties ${propertiesFileName}"
+            }
+        }
+        else if (commentPropsGroup.size()) {
+            try {
+                def propsString = commentPropsGroup[0][1].replaceAll(/(?m)\s+$/,"") -~ /^.*?\r?\n/
+                properties.load(new ByteArrayInputStream(propsString.getBytes("UTF-8")))
+            } catch (Exception e) {
+                return "I can't parse the props in you @props comment: ${e.message}"
             }
         }
 
@@ -56,7 +78,7 @@ class ScriptRunner {
             }
         }
         catch (Exception e){
-            return "I'm having trouble setting your DPPs:\n ${e.message}"
+            return "I'm having trouble setting your DPPs: ${e.message}"
         }
 
         DataContext dataContext = new DataContext(documentContents, properties)
@@ -66,13 +88,19 @@ class ScriptRunner {
             // evalService.eval(dataContext, script)
 
         } catch (Exception e) {
-            return "That script does not make sense to me:\n ${e.message}"
+            return "That script does not make sense to me: ${e.message}"
         }
 
         def result = ""
-        result += "# Dynamic Document Props\n${prettyProps(properties)}\n\n"
-        result += "# Dynamic Process Props\n${prettyProps(dynamicProcessProperties)}\n\n"
-        result += "Resulting Document\n$dataContext.printPretty()"
+        if (dynamicProcessProperties.propertyNames().hasMoreElements()) {
+            result += "# --- DPPs --- #\n${prettyProps(dynamicProcessProperties)}\n"
+        }
+        if (properties.propertyNames().hasMoreElements()) {
+            result += "# --- DDPs --- #\n${prettyProps(properties)}\n"
+        }
+        if (hasData) {
+            result += "# --- Result --- #\n${dataContext.printPretty()}"
+        }
         return result
     }
 
