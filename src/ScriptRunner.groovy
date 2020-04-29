@@ -14,8 +14,8 @@ class ScriptRunner {
         def commentPropsGroup
         try {
             script = fileService.open(scriptName).text -~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
-            commentDataGroup = (script =~ /(?si)\/\*.*?@data.*?\n(.*?)\s*?[-+=*#^~]*?\*\//)
-            commentPropsGroup = (script =~ /(?si)\/\*.*?@props.*?\s(.*?)\s*?[-+=*#^~]*?\*\//)
+            commentDataGroup = (script =~ /(?si)\/\*.*?@data.*?(.*?)\s*?[-+=*#^~]*?\*\//)
+            commentPropsGroup = (script =~ /(?si)\/\*.*?@props.*?(.*?)\s*?[-+=*#^~]*?\*\//)
         } catch (Exception ignored) {
             return "I can't find the script ${scriptName}"
         }
