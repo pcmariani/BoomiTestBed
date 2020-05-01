@@ -68,6 +68,7 @@ class DataContext {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
         }
         
+        // TODO - fix the regex so it doesn't match escaped XML
         else if (outString =~ /\b([,;\t])/) {
             def delimiter = (outString =~ /\b([,;\t])/)[0][1]
             def printDividers = true
