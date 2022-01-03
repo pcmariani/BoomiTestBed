@@ -96,7 +96,7 @@ class ScriptRunner {
             }
         }
         catch (Exception e){
-            return "I'm having trouble setting your DPPs: ${e.message}"
+            return "Cannot set DPPs: ${e.message}"
         }
 
         DataContext dataContext = new DataContext(documentContents, properties)
@@ -107,7 +107,7 @@ class ScriptRunner {
             evalService.eval(dataContext, ExecutionUtil, script)
 
         } catch (Exception e) {
-            return "That script does not make sense to me: ${e.message}"
+            return "ERROR: ${e.message}"
         }
 
         def output = ""
