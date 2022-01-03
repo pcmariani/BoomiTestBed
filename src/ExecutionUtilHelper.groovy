@@ -1,6 +1,7 @@
+// package com.boomi.execution
 import java.util.logging.Logger;
 
-public class ExecutionUtil {
+class ExecutionUtilHelper {
     static def dynamicProcessProperties = new Properties();
 
     static void setDynamicProcessProperty(String key, String value, boolean persist) {
