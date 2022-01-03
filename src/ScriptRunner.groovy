@@ -20,7 +20,15 @@ class ScriptRunner {
             return "I can't find the script ${scriptName}"
         }
 
-        def hasData = false
+        def opts = []
+        if (commentOpts.size()) {
+            try {
+                opts = commentOpts[commentOpts.size()-1 as int][1].split(/ +|-/)
+            } catch (Exception optsEx) {
+                return "I can't understand your options ${opts}"
+            }
+        }
+
         InputStream documentContents = new ByteArrayInputStream("".getBytes("UTF-8"))
         if (dataDocumentName != null) {
             try {
