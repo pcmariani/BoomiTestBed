@@ -41,8 +41,15 @@ class ScriptRunner {
         else if (commentDataGroup.size()) {
             try {
                 def dataString = commentDataGroup[0][1] -~ /^.*?\r?\n/
-                documentContents = new ByteArrayInputStream(dataString.getBytes("UTF-8"))
-                hasData = true
+
+                def propFileGroup = (dataString =~ /(?i)@file\(["'](.*?)["']\)/)
+                if (propFileGroup.size() > 0) {
+                    String fileName = "${propFileGroup[0][1]}"
+                    documentContents = fileService.open(fileName)
+                }
+                else {
+                    documentContents = new ByteArrayInputStream(dataString.getBytes("UTF-8"))
+                }
             } catch (Exception e) {
                 return "I can't read the data in your @data comment: ${e.message}"
             }
