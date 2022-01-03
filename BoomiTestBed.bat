@@ -26,7 +26,6 @@ if "%1"=="" goto ENDLOOP
     goto LOOP
 :ENDLOOP
 
-echo Script running...
 echo.
 
 pushd %PATH_TO_BOOMITESTBED%\src\
