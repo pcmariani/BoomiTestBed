@@ -12,10 +12,12 @@ class ScriptRunner {
         String script
         def commentDataGroup
         def commentPropsGroup
+        def commentOpts
         try {
-            script = fileService.open(scriptName).text -~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
+            script = fileService.open(scriptName).text //-~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
             commentDataGroup = (script =~ /(?si)\/\*.*?@data.*?(.*?)\s*?[-+=*#^~]*?\*\//)
             commentPropsGroup = (script =~ /(?si)\/\*.*?@props.*?(.*?)\s*?[-+=*#^~]*?\*\//)
+            commentOpts = (script =~ /(?i)\/\/.*?@.*?\s*(.*?)\r?\n/)
         } catch (Exception ignored) {
             return "I can't find the script ${scriptName}"
         }
@@ -33,7 +35,6 @@ class ScriptRunner {
         if (dataDocumentName != null) {
             try {
                 documentContents = fileService.open(dataDocumentName)
-                hasData = true
             } catch (Exception ignored) {
                 return "I can't find the document ${dataDocumentName}"
             }
