@@ -98,9 +98,14 @@ class ScriptRunner {
 
         DataContext dataContext = new DataContext(documentContents, properties)
         try {
-            ExecutionUtil eu = new ExecutionUtil()
-            evalService.eval(dataContext, dynamicProcessProperties, script)
-            // evalService.eval(dataContext, script)
+            ExecutionUtilHelper ExecutionUtil = new ExecutionUtilHelper()
+            // ExecutionUtil eu = ExecutionUtil.instance;
+            ExecutionUtil.dynamicProcessProperties = dynamicProcessProperties;
+            println "p1"
+            // script = script.replaceAll("ExecutionUtil","eu")
+            // script = script.replaceAll("import com.boomi.execution.eu", "ExecutionUtil eu = new ExecutionUtil()")
+            script = script  -~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
+            evalService.eval(dataContext, ExecutionUtil, script)
 
         } catch (Exception e) {
             return "That script does not make sense to me: ${e.message}"
