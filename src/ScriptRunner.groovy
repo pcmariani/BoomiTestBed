@@ -96,7 +96,7 @@ class ScriptRunner {
             }
         }
         catch (Exception e){
-            return "Cannot set DPPs: ${e.message}"
+            return "ERROR: Cannot set DPPs: ${e.message}"
         }
 
         DataContext dataContext = new DataContext(documentContents, properties)
