@@ -1,2 +1,4 @@
+package boomitestbed
+
 interface MockableService {
 }

@@ -1,3 +1,5 @@
+package boomitestbed
+
 class ScriptRunner {
     private MockableService fileService
     private MockableService evalService
@@ -14,7 +16,7 @@ class ScriptRunner {
         def commentPropsGroup
         def commentOpts
         try {
-            script = fileService.open(scriptName).text //-~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
+            script = fileService.open(scriptName).text
             commentDataGroup = (script =~ /(?si)\/\*.*?@data.*?(.*?)\s*?[-+=*#^~]*?\*\//)
             commentPropsGroup = (script =~ /(?si)\/\*.*?@props.*?(.*?)\s*?[-+=*#^~]*?\*\//)
             commentOpts = (script =~ /(?i)\/\/.*?@.*?\s*(.*?)\r?\n/)
@@ -100,11 +102,7 @@ class ScriptRunner {
         DataContext dataContext = new DataContext(documentContents, properties)
         try {
             ExecutionUtilHelper ExecutionUtil = new ExecutionUtilHelper()
-            // ExecutionUtil eu = ExecutionUtil.instance;
             ExecutionUtil.dynamicProcessProperties = dynamicProcessProperties;
-            println "p1"
-            // script = script.replaceAll("ExecutionUtil","eu")
-            // script = script.replaceAll("import com.boomi.execution.eu", "ExecutionUtil eu = new ExecutionUtil()")
             script = script  -~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
             evalService.eval(dataContext, ExecutionUtil, script)
 
