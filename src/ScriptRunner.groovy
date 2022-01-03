@@ -111,17 +111,25 @@ class ScriptRunner {
             return "That script does not make sense to me: ${e.message}"
         }
 
-        def result = ""
-        if (dynamicProcessProperties.propertyNames().hasMoreElements()) {
-            result += "# --- DPPs --- #\n${prettyProps(dynamicProcessProperties)}\n"
+        def output = ""
+        if (script =~ /^\s*[^\/\/]\s*println/) output += "\n"
+        if (!opts.contains("nothing")) {
+            def numResultItems = 0
+            if (!opts.contains("noprops")) {
+                if (dynamicProcessProperties.propertyNames().hasMoreElements()) {
+                    output += "# --- DPPs --- #\n${prettyProps(dynamicProcessProperties)}\n"
+                    numResultItems++
+                }
+                if (properties.propertyNames().hasMoreElements()) {
+                    output += "# --- DDPs --- #\n${prettyProps(properties)}\n"
+                    numResultItems++
+                }
+            }
+            if (!opts.contains("noresult")) {
+                output += "${numResultItems ? "# --- Result --- #\n" : ""} ${dataContext.printPretty()}"
+            }
         }
-        if (properties.propertyNames().hasMoreElements()) {
-            result += "# --- DDPs --- #\n${prettyProps(properties)}\n"
-        }
-        if (hasData) {
-            result += "# --- Result --- #\n${dataContext.printPretty()}"
-        }
-        return result
+        return output
     }
 
     private String prettyProps (Properties properties) {
