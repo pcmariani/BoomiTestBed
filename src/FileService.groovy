@@ -1,4 +1,4 @@
-package boomitestbed
+// package boomitestbed
 
 class FileService implements MockableService {
     InputStream open(String fileName) {

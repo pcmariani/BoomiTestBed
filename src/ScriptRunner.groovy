@@ -1,4 +1,4 @@
-package boomitestbed
+// package boomitestbed
 
 class ScriptRunner {
     private MockableService fileService
