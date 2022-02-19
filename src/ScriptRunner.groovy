@@ -123,9 +123,9 @@ class ScriptRunner {
                     output += "# --- DDPs --- #\n${prettyProps(properties)}\n"
                     numResultItems++
                 }
-            }
+            asd;lf;sldkfjal;ksjdfa w}
             if (!opts.contains("noresult")) {
-                output += "${numResultItems ? "# --- Result --- #\n" : ""} ${dataContext.printPretty()}"
+                output += "${numResultItems ? "--------------------------\n\n" : ""} ${dataContext.printPretty()}"
             }
         }
         return output
