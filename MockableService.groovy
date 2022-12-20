@@ -1,0 +1,4 @@
+// package boomitestbed
+
+interface MockableService {
+}
