@@ -36,6 +36,7 @@ class ScriptRunner {
         InputStream documentContents = new ByteArrayInputStream("".getBytes("UTF-8"))
         if (dataDocumentName != null) {
             try {
+                // println dataDocumentName
                 documentContents = fileService.open(dataDocumentName)
             } catch (Exception ignored) {
                 return "I can't find the document ${dataDocumentName}"
@@ -84,9 +85,16 @@ class ScriptRunner {
 
                 def propFileGroup = (value =~ /(?i)^@file\(["'](.*?)["']\)/)
                 if (propFileGroup.size() > 0) {
-                    String fileName = "${workingDir}\\${propFileGroup[0][1]}"
+                    ArrayList propsFileNameArr = propertiesFileName.split("/")
+                    def propsFilePath = propsFileNameArr[0..-2].join("/")
+                    String fileName = "${propsFilePath}/${propFileGroup[0][1]}"
                     value = fileService.open(fileName).text
+                        .replaceAll("\r?\n","")
+                    // println value
                     properties.setProperty(key,value)
+                }
+                else {
+                    value = value.replaceAll("\\\\","\\\\\\\\")
                 }
 
                 if (!key.startsWith("document.dynamic.userdefined")) {
@@ -110,24 +118,51 @@ class ScriptRunner {
             return "ERROR: ${e.message}"
         }
 
+        def resultString = dataContext.printPretty()
+        def dynamicProcessPropsString = prettyProps(dynamicProcessProperties)
+        def dynamicDocumentPropsString = prettyProps(properties)
+
         def output = ""
-        if (script =~ /^\s*[^\/\/]\s*println/) output += "\n"
-        if (!opts.contains("nothing")) {
-            def numResultItems = 0
-            if (!opts.contains("noprops")) {
-                if (dynamicProcessProperties.propertyNames().hasMoreElements()) {
-                    output += "# --- DPPs --- #\n${prettyProps(dynamicProcessProperties)}\n"
-                    numResultItems++
-                }
-                if (properties.propertyNames().hasMoreElements()) {
-                    output += "# --- DDPs --- #\n${prettyProps(properties)}\n"
-                    numResultItems++
-                }
-            asd;lf;sldkfjal;ksjdfa w}
-            if (!opts.contains("noresult")) {
-                output += "${numResultItems ? "--------------------------\n\n" : ""} ${dataContext.printPretty()}"
-            }
-        }
+        // if (script =~ /^\s*[^\/\/]\s*println/) output += "\n"
+        // if (!opts.contains("nothing")) {
+        //     def numResultItems = 0
+        //     if (!opts.contains("noprops")) {
+        //         if (dynamicProcessProperties.propertyNames().hasMoreElements()) {
+        //             output += "# --- DPPs --- #\n$dynamicProcessPropsString\n"
+        //             numResultItems++
+        //         }
+        //         if (properties.propertyNames().hasMoreElements()) {
+        //             output += "# --- DDPs --- #\n$dynamicDocumentPropsString\n"
+        //             numResultItems++
+        //         }
+        //     }
+        //     if (!opts.contains("noresult")) {
+        //         output += "${numResultItems ? "--------------------------\n\n" : ""}$resultString"
+        //     }
+        // }
+        output += resultString
+
+        // ArrayList dataFileNameArr = dataDocumentName.split("/")
+        // def dataFilePath = dataFileNameArr[0..-2].join("/")
+        ArrayList scriptNameArr = scriptName.split("/")
+        def scriptPath = scriptNameArr[0..-2].join("/")
+        def scriptNameHead = scriptNameArr[-1].split("__")[0]
+        println scriptNameHead
+
+        // def dataFileNameOutArr = dataFileNameArr[-1].split("\\.")
+        // println "dataFilePath: " + dataFilePath
+        // println "dataFileNameOutArr: " + dataFileNameOutArr
+        File outDataFile = new File(scriptPath + "/" + scriptNameHead + "_out.dat")
+        outDataFile.write resultString
+
+        File outPropsFile = new File(scriptPath + "/" + scriptNameHead + "_out.properties")
+        outPropsFile.write dynamicProcessPropsString + "\n" + dynamicDocumentPropsString
+        // if (propertiesFileName) {
+            // println propertiesFileName
+            // ArrayList propsFileNameArr = propertiesFileName.split("/")
+            // def propsFilePath = propsFileNameArr[0..-2].join("/")
+            // def propsFileNameOutArr = propsFileNameArr[-1].split("\\.")
+        // }
         return output
     }
 
@@ -137,7 +172,9 @@ class ScriptRunner {
         while (e.hasMoreElements()) {
             String key = (String) e.nextElement()
             String value = properties.getProperty(key)
-            propsString += "${key} = ${value}\n"
+                                .replaceAll("\r?\n","")
+                                .replaceAll("\\\\","\\\\\\\\")
+            propsString += "${key}=${value}\n"
         }
         return propsString
     }

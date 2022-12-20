@@ -8,26 +8,35 @@ import java.util.regex.Pattern;
 // import org.xml.sax.SAXException;
 
 class DataContext {
+    // ArrayList dataContextArr
     InputStream is
     Properties props
 
+    // DataContext(ArrayList dataContextArr) {
+    //     dataContextArr dataContextArr
+    // }
     DataContext(InputStream inputStream, Properties properties){
         is = inputStream
         props = properties
     }
 
     void storeStream(InputStream inputStream, Properties properties){
+    // void storeStream(ArrayList documentPropsArr) {
+        // dataContextArr.push(dataContextItem)
         is = inputStream
         props = properties
     }
-
     int getDataCount(){
+        // dataContextArr.size()
         1
     }
     InputStream getStream(int index){
+        // dataContextArr[index][0]
         is
     }
+
     Properties getProperties(int index) {
+        // dataContextArr[index][1]
         props
     }
 
