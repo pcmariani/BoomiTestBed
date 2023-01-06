@@ -3,11 +3,12 @@
 DEBUG=0
 
 newArgs=""
-while getopts "d:p:" arg; do
+while getopts "d:p:b" arg; do
     case $arg in
         d)  newArgs+="-d $(pwd)/"${OPTARG}" ";;
         p)  newArgs+="-p $(pwd)/"${OPTARG}" ";;
-        g)  DEBUG=1 ;;
+        b)  DEBUG=1 ;;
+        *)  echo "Usage: [-b] [-d datafile] [-p propsfile] scriptfile"; exit 1;;
     esac
 done
 
