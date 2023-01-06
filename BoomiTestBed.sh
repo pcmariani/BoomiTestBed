@@ -1,20 +1,16 @@
 #!/usr/bin/env bash
 
-DEBUG=1
+DEBUG=0
 
 newArgs=""
 while getopts "d:p:" arg; do
     case $arg in
         d)  newArgs+="-d $(pwd)/"${OPTARG}" ";;
-        # d)  documentFilesArr=(${OPTARG// / })
-        #     for i in "${!documentFilesArr[@]}"; do
-        #       documentFilesArr[i]="$(pwd)/${documentFilesArr[i]}"
-        #     done
-        #     newArgs+="-d '${documentFilesArr[@]}' "
-        #     ;;
         p)  newArgs+="-p $(pwd)/"${OPTARG}" ";;
+        g)  DEBUG=1 ;;
     esac
 done
+
 newArgs+="$(pwd)/${@: -1}"
 
 [ "$DEBUG" -eq 1 ] && echo "BoomiTestBed.sh DEBUG..."
