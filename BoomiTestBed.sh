@@ -3,49 +3,49 @@
 DEBUG=0
 newArgs=""
 
-while getopts "s:d:p:o:bn" arg; do
+while getopts "s:d:p:o:w:bn" arg; do
     case $arg in
         s)  newArgs+="-s $(pwd)/"${OPTARG}" ";;
         d)  newArgs+="-d $(pwd)/"${OPTARG}" ";;
         p)  newArgs+="-p $(pwd)/"${OPTARG}" ";;
-        o)  newArgs+="-o ${OPTARG} ";;
+        e)  newArgs+="-e ${OPTARG} ";;
+        w)  newArgs+="-e $(pwd) ";;
         n)  newArgs+="-n ";;
         b)  DEBUG=1; echo ">>> DEBUG ON" ;;
-        *)  echo "Usage: [-bn] [-d datafile] [-p propsfile] scriptfile"; exit 1;;
+        # *)  echo "Usage: [-bn] [-d datafile] [-p propsfile] scriptfile"; exit 1;;
+        *)  groovy "$BOOMI_HOME"/BoomiTestBed.groovy -h; exit 1;;
     esac
 done
 
 newArgs+="$(pwd)/${@: -1}"
 
-warn() {
+_echo() {
    if [ "$DEBUG" -eq 1 ]; then 
-       tput setaf 2
-       [ -z "$@" ] && echo "$@" || echo ">>> $@"
-       tput sgr0
+       [ -z "$@" ] && echo "$@" || echo "$(tput setaf 2)>>> $@$(tput sgr0)"
    fi
 }
 
 
-warn "BOOMI_HOME: $BOOMI_HOME"
-warn "pwd: $(pwd)"
-warn "pushd"
-warn
+_echo "BOOMI_HOME: $BOOMI_HOME"
+_echo "pwd: $(pwd)"
+_echo "pushd"
+_echo
 
 pushd $BOOMI_HOME > /dev/null
 
-warn "pwd: $(pwd)"
-warn "newArgs: $newArgs"
-warn "groovyclient $BOOMI_HOME/BoomiTestBed.groovy $newArgs"
-warn
+_echo "pwd: $(pwd)"
+_echo "newArgs: $newArgs"
+_echo "groovyclient $BOOMI_HOME/BoomiTestBed.groovy $newArgs"
+_echo
 
 groovyclient "$BOOMI_HOME"/BoomiTestBed.groovy $newArgs
 
-warn "popd"
+_echo "popd"
 
 popd > /dev/null
 
-warn "pwd: $(pwd)"
-warn
+_echo "pwd: $(pwd)"
+_echo
 
 # if !"$BOOMI_HOME"; then
 # echo "ERROR: Need to set BOOMI_HOME"

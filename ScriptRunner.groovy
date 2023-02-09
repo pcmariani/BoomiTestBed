@@ -1,22 +1,22 @@
 // package boomitestbed
 
 class ScriptRunner {
-    private MockableService fileService
-    private MockableService evalService
+    // private MockableService fileService
+    // private MockableService evalService
 
-    ScriptRunner(MockableService fileService, MockableService evalService) {
-        this.fileService = fileService
-        this.evalService = evalService
-    }
+    // ScriptRunner(MockableService fileService, MockableService evalService) {
+        // this.fileService = fileService
+        // this.evalService = evalService
+    // }
 
-    String run(String scriptName, String dataDocumentName, String propertiesFileName, String outFileExtension, Boolean suppressOutput) {
+    String run(String scriptName, String dataDocumentName, String propertiesFileName, String outFileExtension, Boolean suppressData, Boolean suppressProps, String ddpPreplacePattern) {
 
         String script
         def commentDataGroup
         def commentPropsGroup
         def commentOpts
         try {
-            script = fileService.open(scriptName).text
+            script = new FileInputStream(scriptName).text
             commentDataGroup = (script =~ /(?si)\/\*.*?@data.*?(.*?)\s*?[-+=*#^~]*?\*\//)
             commentPropsGroup = (script =~ /(?si)\/\*.*?@props.*?(.*?)\s*?[-+=*#^~]*?\*\//)
             commentOpts = (script =~ /(?i)\/\/.*?@.*?\s*(.*?)\r?\n/)
@@ -37,7 +37,7 @@ class ScriptRunner {
         if (dataDocumentName != null) {
             try {
                 // println dataDocumentName
-                documentContents = fileService.open(dataDocumentName)
+                documentContents = new FileInputStream(dataDocumentName)
             } catch (Exception ignored) {
                 return "I can't find the document ${dataDocumentName}"
             }
@@ -49,7 +49,7 @@ class ScriptRunner {
                 def propFileGroup = (dataString =~ /(?i)@file\(["'](.*?)["']\)/)
                 if (propFileGroup.size() > 0) {
                     String fileName = "${propFileGroup[0][1]}"
-                    documentContents = fileService.open(fileName)
+                    documentContents = new FileInputStream(fileName)
                 }
                 else {
                     documentContents = new ByteArrayInputStream(dataString.getBytes("UTF-8"))
@@ -62,7 +62,7 @@ class ScriptRunner {
         Properties properties = new Properties()
         if (propertiesFileName != null) {
             try {
-                properties.load(fileService.open(propertiesFileName) as InputStream)
+                properties.load(new FileInputStream(propertiesFileName) as InputStream)
             } catch (Exception ignored) {
                 return "I can't find the properties ${propertiesFileName}"
             }
@@ -88,7 +88,7 @@ class ScriptRunner {
                     ArrayList propsFileNameArr = propertiesFileName.split("/")
                     def propsFilePath = propsFileNameArr[0..-2].join("/")
                     String fileName = "${propsFilePath}/${propFileGroup[0][1]}"
-                    value = fileService.open(fileName).text
+                    value = new FileInputStream(fileName).text
                         .replaceAll("\r?\n","")
                     // println value
                     properties.setProperty(key,value)
@@ -112,7 +112,10 @@ class ScriptRunner {
             ExecutionUtilHelper ExecutionUtil = new ExecutionUtilHelper()
             ExecutionUtil.dynamicProcessProperties = dynamicProcessProperties;
             script = script  -~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
-            evalService.eval(dataContext, ExecutionUtil, script)
+            // evalService.eval(dataContext, ExecutionUtil, script)
+
+            Eval.xy(dataContext, ExecutionUtil, "def dataContext = x; def ExecutionUtil = y;" +
+                    "${script}; return dataContext")
 
         } catch (Exception e) {
             return "ERROR: ${e.message}"
@@ -140,7 +143,20 @@ class ScriptRunner {
         //         output += "${numResultItems ? "--------------------------\n\n" : ""}$resultString"
         //     }
         // }
-        suppressOutput ? true : (output += resultString)
+        if (!suppressData) output += resultString
+
+        if (!suppressProps) {
+            if (properties.propertyNames().hasMoreElements()) {
+                output += "\nDynamic Document Props\n----------------------\n"
+                output += dynamicDocumentPropsString
+                    .replaceAll("document.dynamic.userdefined.","")
+                    .replaceAll(/$ddpPreplacePattern\n/,"")
+            }
+            if (dynamicProcessProperties.propertyNames().hasMoreElements()) {
+                output += "\n\nDYNAMIC PROCESS PROPS\n---------------------\n"
+                output += dynamicProcessPropsString
+            }
+        }
 
         // println "scriptName: " + scriptName
         ArrayList scriptNameArr = scriptName.split("/")
@@ -157,14 +173,11 @@ class ScriptRunner {
         File outDataFile = new File(scriptPath + execFilesPath + scriptNameHead + "_out." + outFileExtension)
         outDataFile.write resultString
 
+        // if (propertiesFileName) {
         File outPropsFile = new File(scriptPath + execFilesPath + scriptNameHead + "_out.properties")
         outPropsFile.write dynamicProcessPropsString + "\n" + dynamicDocumentPropsString
-        // if (propertiesFileName) {
-            // println propertiesFileName
-            // ArrayList propsFileNameArr = propertiesFileName.split("/")
-            // def propsFilePath = propsFileNameArr[0..-2].join("/")
-            // def propsFileNameOutArr = propsFileNameArr[-1].split("\\.")
         // }
+
         return output
     }
 

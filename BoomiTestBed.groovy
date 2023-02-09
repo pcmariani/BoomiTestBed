@@ -2,19 +2,18 @@
 
 class BoomiTestBed {
     static void main(String[] args) throws Exception {
-        def cli = new CliBuilder(usage: 'BoomiTestBed.groovy [-h] [-d document] [-p properties] script')
+        def cli = new CliBuilder(usage: 'BoomiTestBed.groovy [-hn] -s script [-d document] [-p properties] [-e extension] [-w working-dir]')
 
         cli.with {
-            h  longOpt: 'help', 'Show usage information (you\'re here ;)'
+            h  longOpt: 'help', 'Show usage (you\'re here ;)'
             s  longOpt: 'script', args: 1, argName: 'scriptName', 'Sets the source for the script'
             d  longOpt: 'document', args: 1, argName: 'documentName', 'Sets the source for incoming document'
             p  longOpt: 'properties', args: 1, argName: 'propertiesName', 'Sets the source properties'
-            n  longOpt: 'no-result', type: boolean, 'suppresses output' 
-            o  longOpt: 'extension', args: 1, argName: 'outFileExtension', 'Extension of output file' 
-
-            // xr longOpt: 'no result', 'don\t output result'
-            // xp longOpt: 'no DPPs', 'don\t output dynamic process properties'
-            // xd longOpt: 'no DDPs', 'don\t output dynamic document properties'
+            e  longOpt: 'extension', args: 1, argName: 'outFileExtension', 'Extension of output file'
+            w  longOpt: 'working-dir', args: 1, argName: 'workingDir', 'Present Working Directory'
+            xd longOpt: 'suppress-data-output', type: boolean, 'Suppresses output of data'
+            xp longOpt: 'suppress-props-output', type: boolean, 'Suppresses output of props'
+            rp longOpt: 'ddp-replace-pattern', args: 1, argName: 'ddpPreplacePattern', 'Props to prevent from appearing'
         }
 
         def options = cli.parse(args)
@@ -24,22 +23,28 @@ class BoomiTestBed {
             return
         }
 
-        println "Suppress Output: " + options.n.toString()
-        println "Extension: " + options.o
-
-        // String scriptName = options.arguments()[0] ? options.arguments()[0] : ( options.s ? options.s : null)
-        String scriptName = options.s ? options.s : ( options.arguments()[0] ? options.arguments()[0] : null)
-        String dataDocumentName = options.d ? options.d : null
-        String propertiesFileName = options.p ? options.p : null
-        String outFileExtension = options.o ? options.o : "dat"
-        Boolean suppressResult = options.n
+        String workingDir = options.w ? options.w : System.getProperty("user.dir")
+        String scriptName = options.s ? workingDir + "/" + options.s : null
+        String dataDocumentName = options.d ? workingDir + "/" + options.d : null
+        String propertiesFileName = options.p ? workingDir + "/" + options.p : null
+        String outFileExtension = options.e ? options.e : "dat"
+        Boolean suppressData = options.xd
+        Boolean suppressProps = options.xp
+        String ddpPreplacePattern = options.rp ? options.rp : null
 
         if (scriptName == null) {
             cli.usage()
             return
         }
 
-        println new ScriptRunner(new FileService(), new EvalService())
-                    .run(scriptName, dataDocumentName, propertiesFileName, outFileExtension, suppressResult)
+        // println "PWD: " + System.getProperty("user.dir")
+        // println "workingDir: " + options.w
+        // println "scriptName: " + scriptName
+        // println "dataDocumentName: " + dataDocumentName
+        // println "propertiesFileName: " + propertiesFileName
+        // println "outFileExtension: " + outFileExtension
+        // println "Suppress Output: " + suppressResult
+
+        println new ScriptRunner().run(scriptName, dataDocumentName, propertiesFileName, outFileExtension, suppressData, suppressProps, ddpPreplacePattern)
     }
 }
