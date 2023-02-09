@@ -113,7 +113,6 @@ class ScriptRunner {
             ExecutionUtil.dynamicProcessProperties = dynamicProcessProperties;
             script = script  -~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
             // evalService.eval(dataContext, ExecutionUtil, script)
-
             Eval.xy(dataContext, ExecutionUtil, "def dataContext = x; def ExecutionUtil = y;" +
                     "${script}; return dataContext")
 
@@ -143,6 +142,8 @@ class ScriptRunner {
         //         output += "${numResultItems ? "--------------------------\n\n" : ""}$resultString"
         //     }
         // }
+        if (!suppressData && !suppressProps) output += "\nResult\n------\n"
+
         if (!suppressData) output += resultString
 
         if (!suppressProps) {
