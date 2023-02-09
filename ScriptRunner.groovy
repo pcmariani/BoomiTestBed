@@ -9,7 +9,7 @@ class ScriptRunner {
         this.evalService = evalService
     }
 
-    String run(String scriptName, String dataDocumentName, String propertiesFileName) {
+    String run(String scriptName, String dataDocumentName, String propertiesFileName, String outFileExtension, Boolean suppressOutput) {
 
         String script
         def commentDataGroup
@@ -140,22 +140,24 @@ class ScriptRunner {
         //         output += "${numResultItems ? "--------------------------\n\n" : ""}$resultString"
         //     }
         // }
-        output += resultString
+        suppressOutput ? true : (output += resultString)
 
-        // ArrayList dataFileNameArr = dataDocumentName.split("/")
-        // def dataFilePath = dataFileNameArr[0..-2].join("/")
+        // println "scriptName: " + scriptName
         ArrayList scriptNameArr = scriptName.split("/")
+        // println "scriptNameArr: " + scriptNameArr.toString()
         def scriptPath = scriptNameArr[0..-2].join("/")
-        def scriptNameHead = scriptNameArr[-1].split("__")[0]
-        println scriptNameHead
+        // println "scriptPath: " + scriptPath
+        def scriptNameHead = scriptNameArr[-1] -~ /\.b\.groovy$/ -~ /\.groovy$/ 
+        // println "scriptNameHead: " + scriptNameHead
 
-        // def dataFileNameOutArr = dataFileNameArr[-1].split("\\.")
-        // println "dataFilePath: " + dataFilePath
-        // println "dataFileNameOutArr: " + dataFileNameOutArr
-        File outDataFile = new File(scriptPath + "/" + scriptNameHead + "_out.dat")
+        def execFilesPath = "/_exec/"
+        File executionFilesDir = new File(scriptPath + execFilesPath);
+        if (! executionFilesDir.exists()) executionFilesDir.mkdir()
+
+        File outDataFile = new File(scriptPath + execFilesPath + scriptNameHead + "_out." + outFileExtension)
         outDataFile.write resultString
 
-        File outPropsFile = new File(scriptPath + "/" + scriptNameHead + "_out.properties")
+        File outPropsFile = new File(scriptPath + execFilesPath + scriptNameHead + "_out.properties")
         outPropsFile.write dynamicProcessPropsString + "\n" + dynamicDocumentPropsString
         // if (propertiesFileName) {
             // println propertiesFileName
