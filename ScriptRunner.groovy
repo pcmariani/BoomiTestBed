@@ -1,13 +1,6 @@
 // package boomitestbed
 
 class ScriptRunner {
-    // private MockableService fileService
-    // private MockableService evalService
-
-    // ScriptRunner(MockableService fileService, MockableService evalService) {
-        // this.fileService = fileService
-        // this.evalService = evalService
-    // }
 
     String run(String scriptName, String dataDocumentName, String propertiesFileName, String outFileExtension, Boolean suppressData, Boolean suppressProps, String ddpPreplacePattern) {
 
