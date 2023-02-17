@@ -2,7 +2,7 @@
 
 class ScriptRunner2 {
 
-    String run(String scriptName, String dataDocumentName, String propertiesFileName, String outFileExtension, Boolean suppressData, Boolean suppressProps, String ddpPreplacePattern) {
+    String run(String scriptName, String dataDocumentName, String propertiesFileName, String outFileExtension, Boolean suppressData, Boolean suppressProps, String ddpPreplacePattern, Boolean outToFile) {
 
         // TODO maybe
         // def commentInputs = getCommentInputs() // commentInputs.data .props. opts
@@ -64,7 +64,7 @@ class ScriptRunner2 {
                 output += "\nDynamic Document Props\n----------------------\n"
                 output += dynamicDocumentPropsString
                     .replaceAll("document.dynamic.userdefined.","")
-                    .replaceAll(/$ddpPreplacePattern\n/,"")
+                    .replaceAll(/($ddpPreplacePattern?)=.*\n/,"\$1=...\n")
             }
             if (dynamicProcessProperties.propertyNames().hasMoreElements()) {
                 output += "\n\nDYNAMIC PROCESS PROPS\n---------------------\n"
@@ -81,17 +81,19 @@ class ScriptRunner2 {
         def scriptNameHead = scriptNameArr[-1] -~ /\.b\.groovy$/ -~ /\.groovy$/
         // println "scriptNameHead: " + scriptNameHead
 
-        def execFilesPath = "/_exec/"
-        File executionFilesDir = new File(scriptPath + execFilesPath);
-        if (! executionFilesDir.exists()) executionFilesDir.mkdir()
+        if (outToFile) {
+            def execFilesPath = "/_exec/"
+            File executionFilesDir = new File(scriptPath + execFilesPath);
+            if (! executionFilesDir.exists()) executionFilesDir.mkdir()
 
-        File outDataFile = new File(scriptPath + execFilesPath + scriptNameHead + "_out." + outFileExtension)
-        outDataFile.write resultString
+            File outDataFile = new File(scriptPath + execFilesPath + scriptNameHead + "_out." + outFileExtension)
+            outDataFile.write resultString
 
-        // if (propertiesFileName) {
-        File outPropsFile = new File(scriptPath + execFilesPath + scriptNameHead + "_out.properties")
-        outPropsFile.write dynamicProcessPropsString + "\n" + dynamicDocumentPropsString
-        // }
+            // if (propertiesFileName) {
+            File outPropsFile = new File(scriptPath + execFilesPath + scriptNameHead + "_out.properties")
+            outPropsFile.write dynamicProcessPropsString + "\n" + dynamicDocumentPropsString
+            // }
+        }
 
         return output
     }
