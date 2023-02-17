@@ -2,7 +2,15 @@
 
 class ScriptRunner2 {
 
-    String run(String scriptName, String dataDocumentName, String propertiesFileName, String outFileExtension, Boolean suppressData, Boolean suppressProps, String ddpPreplacePattern, Boolean outToFile) {
+    // String run(String scriptName, String dataDocumentName, String propertiesFileName, String outFileExtension, Boolean suppressData, Boolean suppressProps, String ddpPreplacePattern, Boolean outToFile) {
+    String run(String scriptName, String dataDocumentName, String propertiesFileName, def options) {
+
+        String outFileExtension = options.e ? options.e : "dat"
+        String ddpPreplacePattern = options.rp ? options.rp : null
+        Boolean outToFile = options.f
+        Boolean suppressData = options.xd
+        Boolean suppressProps = options.xp
+        Boolean outputScriptName = options.n
 
         // TODO maybe
         // def commentInputs = getCommentInputs() // commentInputs.data .props. opts
@@ -72,30 +80,29 @@ class ScriptRunner2 {
             }
         }
 
-        // WRITE FILES
-        // println "scriptName: " + scriptName
+        // SCIRPT NAME
         ArrayList scriptNameArr = scriptName.split("/")
-        // println "scriptNameArr: " + scriptNameArr.toString()
         def scriptPath = scriptNameArr[0..-2].join("/")
-        // println "scriptPath: " + scriptPath
         def scriptNameHead = scriptNameArr[-1] -~ /\.b\.groovy$/ -~ /\.groovy$/
         // println "scriptNameHead: " + scriptNameHead
 
+        // WRITE FILES
         if (outToFile) {
-            def execFilesPath = "/_exec/"
-            File executionFilesDir = new File(scriptPath + execFilesPath);
+
+            def execFilesPath = scriptPath + "/_exec/" + scriptNameHead + '/'
+            File executionFilesDir = new File(execFilesPath);
             if (! executionFilesDir.exists()) executionFilesDir.mkdir()
 
-            File outDataFile = new File(scriptPath + execFilesPath + scriptNameHead + "_out." + outFileExtension)
+            File outDataFile = new File(execFilesPath + "01_out." + outFileExtension)
             outDataFile.write resultString
 
             // if (propertiesFileName) {
-            File outPropsFile = new File(scriptPath + execFilesPath + scriptNameHead + "_out.properties")
+            File outPropsFile = new File(execFilesPath + "01_out.properties")
             outPropsFile.write dynamicProcessPropsString + "\n" + dynamicDocumentPropsString
             // }
         }
 
-        return output
+        return outputScriptName ? scriptNameHead : output
     }
 
     private String formatProps (Properties properties) {

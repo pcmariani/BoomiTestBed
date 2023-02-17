@@ -9,6 +9,7 @@ class BoomiTestBed {
             s  longOpt: 'script', args: 1, argName: 'fileName', 'Name of the script'
             d  longOpt: 'document', args: 1, argName: 'fileName', 'Name of input document'
             p  longOpt: 'properties', args: 1, argName: 'fileName', 'Name of input properties'
+            n  longOpt: 'output-name', type: boolean, 'Output script name no extension'
             f  longOpt: 'output-file', type: boolean, 'Output to file'
             e  longOpt: 'extension', args: 1, argName: 'fileExtension', 'Extension of output file'
             w  longOpt: 'working-dir', args: 1, argName: 'dir', 'Present Working Directory'
@@ -28,26 +29,19 @@ class BoomiTestBed {
         String scriptName = options.s ? workingDir + "/" + options.s : null
         String dataDocumentName = options.d ? workingDir + "/" + options.d : null
         String propertiesFileName = options.p ? workingDir + "/" + options.p : null
-        String outFileExtension = options.e ? options.e : "dat"
-        Boolean outToFile = options.f
-        Boolean suppressData = options.xd
-        Boolean suppressProps = options.xp
-        String ddpPreplacePattern = options.rp ? options.rp : null
 
         // println "PWD: " + System.getProperty("user.dir")
         // println "workingDir: " + options.w
         // println "scriptName: " + scriptName
         // println "dataDocumentName: " + dataDocumentName
         // println "propertiesFileName: " + propertiesFileName
-        // println "outFileExtension: " + outFileExtension
-        // println "outToFile: " + outToFile
-        // println "Suppress Output: " + suppressResult
 
         if (scriptName == null) {
             cli.usage()
             return
         }
 
-        println new ScriptRunner2().run(scriptName, dataDocumentName, propertiesFileName, outFileExtension, suppressData, suppressProps, ddpPreplacePattern, outToFile)
+        // println new ScriptRunner2().run(scriptName, dataDocumentName, propertiesFileName, outFileExtension, suppressData, suppressProps, ddpPreplacePattern, outToFile)
+        println new ScriptRunner2().run(scriptName, dataDocumentName, propertiesFileName, options)
     }
 }
