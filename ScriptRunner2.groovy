@@ -7,10 +7,11 @@ class ScriptRunner2 {
 
         String outFileExtension = options.e ? options.e : "dat"
         String ddpPreplacePattern = options.rp ? options.rp : null
-        Boolean outToFile = options.f
+        Boolean outputScriptName = options.on
+        Boolean outToFile = options.of
+        Boolean outToDir = options.od
         Boolean suppressData = options.xd
         Boolean suppressProps = options.xp
-        Boolean outputScriptName = options.n
 
         // TODO maybe
         // def commentInputs = getCommentInputs() // commentInputs.data .props. opts
@@ -87,17 +88,17 @@ class ScriptRunner2 {
         // println "scriptNameHead: " + scriptNameHead
 
         // WRITE FILES
-        if (outToFile) {
+        if (outToFile || outToDir) {
+            def execFilesPath = scriptPath + "/_exec/" + ( outToDir ? scriptNameHead + '/' : "" )
 
-            def execFilesPath = scriptPath + "/_exec/" + scriptNameHead + '/'
             File executionFilesDir = new File(execFilesPath);
             if (! executionFilesDir.exists()) executionFilesDir.mkdir()
 
-            File outDataFile = new File(execFilesPath + "01_out." + outFileExtension)
+            File outDataFile = new File(execFilesPath + ( outToDir ? "" : scriptNameHead ) + "01_out." + outFileExtension)
             outDataFile.write resultString
 
             // if (propertiesFileName) {
-            File outPropsFile = new File(execFilesPath + "01_out.properties")
+            File outPropsFile = new File(execFilesPath + ( outToDir ? "" : scriptNameHead + "_" ) + "01_out.properties")
             outPropsFile.write dynamicProcessPropsString + "\n" + dynamicDocumentPropsString
             // }
         }

@@ -2,15 +2,16 @@
 
 class BoomiTestBed {
     static void main(String[] args) throws Exception {
-        def cli = new CliBuilder(usage: 'BoomiTestBed.groovy [-h][-n][-f][-xd][-xp] -s script [-d document] [-p properties] [-e extension] [-w working-dir] [-rp pattern]')
+        def cli = new CliBuilder(usage: 'BoomiTestBed.groovy [-h][-on][-of][-od][-f][-xd][-xp] -s script [-d document] [-p properties] [-e extension] [-w working-dir] [-rp pattern]')
 
         cli.with {
             h  longOpt: 'help', 'Show usage'
             s  longOpt: 'script', args: 1, argName: 'fileName', 'Name of the script'
             d  longOpt: 'document', args: 1, argName: 'fileName', 'Name of input document'
             p  longOpt: 'properties', args: 1, argName: 'fileName', 'Name of input properties'
-            n  longOpt: 'output-name', type: boolean, 'Output script name no extension'
-            f  longOpt: 'output-file', type: boolean, 'Output to file'
+            on longOpt: 'output-name', type: boolean, 'Output script name no extension'
+            of longOpt: 'output-files', type: boolean, 'Output files'
+            od longOpt: 'output-dir', type: boolean, 'Output files indside a directory'
             e  longOpt: 'extension', args: 1, argName: 'fileExtension', 'Extension of output file'
             w  longOpt: 'working-dir', args: 1, argName: 'dir', 'Present Working Directory'
             xd longOpt: 'suppress-data-output', type: boolean, 'Suppresses output of data'
