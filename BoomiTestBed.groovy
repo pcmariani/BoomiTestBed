@@ -31,6 +31,15 @@ class BoomiTestBed {
         String dataDocumentName = options.d ? workingDir + "/" + options.d : null
         String propertiesFileName = options.p ? workingDir + "/" + options.p : null
 
+        // def dataFileList = []
+        // def dir = new File(workingDir + '/_exec')
+        // dir.eachFileRecurse (groovy.io.FileType.FILES) { file ->
+        //     if (!file.name.contains(".properties")) dataFileList << file
+        // }
+        // dataFileList.each {
+        //     println it.path - ~/$workingDir\//
+        // }
+
         // println "PWD: " + System.getProperty("user.dir")
         // println "workingDir: " + options.w
         // println "scriptName: " + scriptName
