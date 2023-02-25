@@ -94,11 +94,16 @@ class ScriptRunner2 {
             File executionFilesDir = new File(execFilesPath);
             if (! executionFilesDir.exists()) executionFilesDir.mkdir()
 
-            File outDataFile = new File(execFilesPath + ( outToDir ? "" : scriptNameHead ) + "01_out." + outFileExtension)
+            File outDataFile = new File(execFilesPath + ( outToDir ? "" : scriptNameHead + "_" ) + "out.dat")
             outDataFile.write resultString
 
+            if (outFileExtension != "dat") {
+                File otherOutDataFile = new File(execFilesPath + ( outToDir ? "" : scriptNameHead + "_" ) + "out." + outFileExtension)
+                otherOutDataFile.write resultString
+            }
+
             // if (propertiesFileName) {
-            File outPropsFile = new File(execFilesPath + ( outToDir ? "" : scriptNameHead + "_" ) + "01_out.properties")
+            File outPropsFile = new File(execFilesPath + ( outToDir ? "" : scriptNameHead + "_" ) + "out.properties")
             outPropsFile.write dynamicProcessPropsString + "\n" + dynamicDocumentPropsString
             // }
         }
