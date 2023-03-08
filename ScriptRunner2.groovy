@@ -17,14 +17,22 @@ class ScriptRunner2 {
         // def commentInputs = getCommentInputs() // commentInputs.data .props. opts
 
         // SCRIPT
-        String script = new FileInputStream(scriptName).text
+        String script = new FileInputStream(scriptName).text -~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
+        // script = script -~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
 
         // DATA
-        InputStream documentContents = new FileInputStream(dataDocumentName)
+        InputStream documentContents = new ByteArrayInputStream("".getBytes("UTF-8"))
+        if (dataDocumentName != null) {
+            documentContents = new FileInputStream(dataDocumentName)
+        }
+
+        // println "hello"
 
         // PROPS
         Properties properties = new Properties()
-        properties.load(new FileInputStream(propertiesFileName) as InputStream)
+        if (propertiesFileName != null) {
+            properties.load(new FileInputStream(propertiesFileName) as InputStream)
+        }
 
         Properties dynamicProcessProperties = new Properties()
         Enumeration<?> e = properties.propertyNames()
@@ -56,7 +64,7 @@ class ScriptRunner2 {
         DataContext dataContext = new DataContext(documentContents, properties)
         ExecutionUtilHelper ExecutionUtil = new ExecutionUtilHelper()
         ExecutionUtil.dynamicProcessProperties = dynamicProcessProperties;
-        script = script  -~ /import com[.]boomi[.]execution[.]ExecutionUtil;?/
+
         Eval.xy(dataContext, ExecutionUtil, "def dataContext = x; def ExecutionUtil = y;" +
                 "${script}; return dataContext")
 
@@ -65,8 +73,13 @@ class ScriptRunner2 {
         def dynamicDocumentPropsString = formatProps(properties)
 
         // OUTPUT
+        // if data, but no props THEN done't show
+        // if data AND props THEN show
+        // if
         def output = ""
-        if (!suppressData && !suppressProps) output += "\nResult\n------\n"
+        if (!suppressData && !properties.propertyNames().hasMoreElements() && !dynamicProcessProperties.propertyNames().hasMoreElements()) {
+            output += "Result\n------\n"
+        }
         if (!suppressData) output += resultString
         if (!suppressProps) {
             if (properties.propertyNames().hasMoreElements()) {
