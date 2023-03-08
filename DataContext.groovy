@@ -41,7 +41,7 @@ class DataContext {
     }
 
     String printPretty() {
-      return this.is.text
+      this.is.text
     }
  
 
