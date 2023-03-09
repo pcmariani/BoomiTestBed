@@ -77,7 +77,9 @@ class ScriptRunner2 {
         // if data AND props THEN show
         // if
         def output = ""
-        if (!suppressData && !properties.propertyNames().hasMoreElements() && !dynamicProcessProperties.propertyNames().hasMoreElements()) {
+        if (!suppressProps ||
+            (!suppressData && !properties.propertyNames().hasMoreElements() && !dynamicProcessProperties.propertyNames().hasMoreElements())
+        ) {
             output += "Result\n------\n"
         }
         if (!suppressData) output += resultString
