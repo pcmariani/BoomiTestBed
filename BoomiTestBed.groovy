@@ -51,7 +51,15 @@ class BoomiTestBed {
             return
         }
 
-        // println new ScriptRunner2().run(scriptName, dataDocumentName, propertiesFileName, outFileExtension, suppressData, suppressProps, ddpPreplacePattern, outToFile)
-        println new ScriptRunner2().run(scriptName, dataDocumentName, propertiesFileName, options)
+        try {
+            // println new ScriptRunner2().run(scriptName, dataDocumentName, propertiesFileName, outFileExtension, suppressData, suppressProps, ddpPreplacePattern, outToFile)
+            println new ScriptRunner2().run(scriptName, dataDocumentName, propertiesFileName, options)
+        }
+        catch(Exception e) {
+            println("## Exception ##")
+            org.codehaus.groovy.runtime.StackTraceUtils.sanitize(e).printStackTrace()
+            System.exit(1)
+        }
+
     }
 }
