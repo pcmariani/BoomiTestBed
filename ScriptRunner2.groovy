@@ -107,7 +107,8 @@ class ScriptRunner2 {
             def execFilesPath = scriptPath + "/_exec/" + ( outToDir ? scriptNameHead + '/' : "" )
 
             File executionFilesDir = new File(execFilesPath);
-            if (! executionFilesDir.exists()) executionFilesDir.mkdir()
+            if (executionFilesDir.exists()) executionFilesDir.deleteDir()
+            executionFilesDir.mkdir()
 
             File outDataFile = new File(execFilesPath + ( outToDir ? "" : scriptNameHead + "_" ) + "out.dat")
             outDataFile.write resultString
